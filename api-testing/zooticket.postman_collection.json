@@ -1,0 +1,356 @@
+{
+  "info": {
+    "name": "ZooTicket Payments API v1.1.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Коллекция для проверки платёжного API ZooTicket. Перед запуском заполнить переменные окружения baseUrl и token."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.zooticket.ru/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "paymentId",
+      "value": ""
+    },
+    {
+      "key": "idempotencyKey",
+      "value": "key-001"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "01. Создание платежа — валидные данные",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{idempotencyKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderId\": \"1024\",\n  \"amount\": 1500,\n  \"currency\": \"RUB\",\n  \"returnUrl\": \"https://zooticket.ru/success\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Код ответа 201', () => pm.response.to.have.status(201));",
+              "const b = pm.response.json();",
+              "pm.test('Есть id платежа', () => pm.expect(b).to.have.property('id'));",
+              "pm.test('Статус pending', () => pm.expect(b.status).to.eql('pending'));",
+              "pm.test('Есть ссылка на оплату', () => pm.expect(b).to.have.property('paymentUrl'));",
+              "if (b.id) pm.collectionVariables.set('paymentId', b.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Повтор с тем же ключом идемпотентности",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{idempotencyKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderId\": \"1024\",\n  \"amount\": 1500,\n  \"currency\": \"RUB\",\n  \"returnUrl\": \"https://zooticket.ru/success\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Ожидаемое поведение уточняется: см. DEF-001",
+              "pm.test('Новый платёж не создан', () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.id).to.eql(pm.collectionVariables.get('paymentId'));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Создание платежа — нулевая сумма",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "key-zero-amount"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderId\": \"1025\",\n  \"amount\": 0,\n  \"currency\": \"RUB\",\n  \"returnUrl\": \"https://zooticket.ru/success\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Код ответа 400', () => pm.response.to.have.status(400));",
+              "pm.test('В ошибке есть code и message', () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b).to.have.property('code');",
+              "  pm.expect(b).to.have.property('message');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. Создание платежа — без авторизации",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "key-noauth"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderId\": \"1026\",\n  \"amount\": 1500,\n  \"currency\": \"RUB\",\n  \"returnUrl\": \"https://zooticket.ru/success\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Код ответа 401', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. Статус платежа",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/payments/{{paymentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments",
+            "{{paymentId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Код ответа 200', () => pm.response.to.have.status(200));",
+              "pm.test('Статус из допустимого перечня', () => {",
+              "  const s = pm.response.json().status;",
+              "  pm.expect(['pending','succeeded','failed','refunded']).to.include(s);",
+              "});",
+              "pm.test('Ответ быстрее 1 секунды', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. Статус несуществующего платежа",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/payments/pay_999999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments",
+            "pay_999999"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Код ответа 404', () => pm.response.to.have.status(404));",
+              "pm.test('Код ошибки payment_not_found', () => {",
+              "  pm.expect(pm.response.json().code).to.eql('payment_not_found');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. Возврат — полная сумма",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payments/{{paymentId}}/refund",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments",
+            "{{paymentId}}",
+            "refund"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 1500\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Код ответа 200', () => pm.response.to.have.status(200));",
+              "pm.test('Есть id возврата', () => pm.expect(pm.response.json()).to.have.property('id'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08. Возврат — повторный",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payments/{{paymentId}}/refund",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments",
+            "{{paymentId}}",
+            "refund"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 1500\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Код ответа 422', () => pm.response.to.have.status(422));",
+              "pm.test('Код ошибки refund_not_allowed', () => {",
+              "  pm.expect(pm.response.json().code).to.eql('refund_not_allowed');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
