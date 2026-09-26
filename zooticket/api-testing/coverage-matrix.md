@@ -10,7 +10,7 @@
 | POST /payments | 201 | да | да | TC-PAY-01 |
 | POST /payments | 400 | да | да | TC-PAY-04, 05, 06, 08 |
 | POST /payments | 401 | да | да | TC-PAY-10, 11 |
-| POST /payments | 409 | да | нет | заблокирован [DEF-001](../bug-reports/DEF-001-idempotency-409.md) |
+| POST /payments | 409 | да | нет | заблокирован [DEF-001](../defect-reports/DEF-001-idempotency-409.md) |
 | POST /payments | 500 | да | нет | нужен стенд с управляемым сбоем |
 | GET /payments/{id} | 200 | да | да | smoke-чек-лист |
 | GET /payments/{id} | 401 | да | да | smoke-чек-лист |
