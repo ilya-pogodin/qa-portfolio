@@ -19,6 +19,12 @@
 
 Здесь собрано всё, что строится вокруг спецификации: тест-кейсы, дефекты требований, найденные статическим тестированием, чек-листы и материалы по тестированию API вместе с рабочей коллекцией Postman.
 
+### [mcp-server](mcp-server) — тестирование работающего кода
+
+MCP-сервер, сгенерированный SwaggerHub по OpenAPI-спецификации: десять инструментов для работы с товарами и заказами.
+
+Единственный проект, где тестируется запускаемый код. Шесть дефектов за два прогона, один блокирующий: инструменты возвращают данные в формате, который протокол не принимает, и ломаются именно на успешном сценарии. Для проверки написана заглушка внешнего API — без неё успешный путь не воспроизводится.
+
 ### [templates](templates) — общие шаблоны
 
 Формы тест-кейса, баг-репорта и универсального чек-листа регрессии. Не привязаны к проекту, используются в обоих.
@@ -30,18 +36,20 @@
 | Тип артефакта | Где смотреть |
 |---|---|
 | Баг-репорты по работающему приложению | [rusau-learn](rusau-learn) |
+| Баг-репорты по запускаемому коду | [mcp-server/bug-reports](mcp-server/bug-reports) |
+| Отчёты о прогонах | [mcp-server/bug-reports](mcp-server/bug-reports) |
 | Тест-кейсы | [zooticket/test-cases](zooticket/test-cases) |
 | Дефекты требований (статическое тестирование) | [zooticket/defect-reports](zooticket/defect-reports) |
-| Чек-листы | [zooticket/checklists](zooticket/checklists), [templates](templates) |
+| Чек-листы | [zooticket/checklists](zooticket/checklists), [mcp-server](mcp-server/checklist-mcp-server.md), [templates](templates) |
 | Тестирование API, коллекция Postman | [zooticket/api-testing](zooticket/api-testing) |
 
 ---
 
 ## Инструменты
 
-SQL (PostgreSQL), OpenAPI 3.0, UML, Postman, Git, DevTools, Figma.
+SQL (PostgreSQL), OpenAPI 3.0, UML, Postman, curl, Node.js, Git, DevTools, Figma.
 
-Подтверждённые компетенции: PostgreSQL, API, ООП, Python (НСОК, Минцифры, 2026). «Введение в UML», 72 ч (ИНТУИТ). «Системный аналитик» (Aston, 2026).
+Подтверждённые компетенции: PostgreSQL — средний уровень, API — базовый, ООП — средний, Python — базовый (НСОК, Минцифры, 2026). «Введение в UML», 72 ч (ИНТУИТ). «Системный аналитик» (Aston, 2026).
 
 ## Смежное портфолио
 
