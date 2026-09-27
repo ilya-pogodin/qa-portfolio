@@ -47,9 +47,9 @@ MCP-сервер, сгенерированный SwaggerHub по OpenAPI-спе�
 
 ## Инструменты
 
-SQL (PostgreSQL), OpenAPI 3.0, UML, Postman, curl, Node.js, Git, DevTools, Figma.
+SQL (PostgreSQL, MySQL), OpenAPI 3.0, UML, Postman, curl, Node.js, Git, DevTools, Figma.
 
-Подтверждённые компетенции: PostgreSQL — средний уровень, API — базовый, ООП — средний, Python — базовый (НСОК, Минцифры, 2026). «Введение в UML», 72 ч (ИНТУИТ). «Системный аналитик» (Aston, 2026).
+Подтверждённые компетенции: PostgreSQL, API, ООП, Python (НСОК, Минцифры, 2026). «Введение в UML», 72 ч (ИНТУИТ). «Системный аналитик» (Aston, 2026).
 
 ## Смежное портфолио
 
