@@ -55,14 +55,15 @@ curl -X POST http://localhost:4000/mcp \
 
 ## Инструменты: успешный сценарий
 
-Проверяется при поднятой заглушке.
+Проверяется при поднятой заглушке. Пункты сформулированы как ожидаемое поведение — на текущей версии часть из них не проходит, см. [BUG-005](bug-reports/BUG-005-invalid-content-type.md) и [BUG-006](bug-reports/BUG-006-delete-reports-false-failure.md).
 
 - [ ] `get-products` возвращает список товаров
 - [ ] `get-product` с существующим идентификатором возвращает товар
 - [ ] `add-product` создаёт товар и возвращает его
 - [ ] `update-product` обновляет товар
 - [ ] `delete-product` удаляет товар и сообщает об успехе
-- [ ] Те же шесть проверок для заказов: `get-orders`, `get-order`, `create-order`, `update-order`, `delete-order`
+- [ ] Те же пять проверок для заказов: `get-orders`, `get-order`, `create-order`, `update-order`, `delete-order`
+- [ ] Состояние данных после операций проверено напрямую у API, а не через MCP-сервер
 
 ## Инструменты: негативные сценарии
 

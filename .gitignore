@@ -1,0 +1,15 @@
+# Служебные файлы macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Зависимости Node.js
+node_modules/
+
+# Логи
+*.log
+npm-debug.log*
+
+# Локальные настройки редакторов
+.vscode/
+.idea/
