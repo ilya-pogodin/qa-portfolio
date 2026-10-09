@@ -30,11 +30,27 @@ curl -i http://localhost:4001/products/p1
 curl -X POST http://localhost:4000/mcp -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"delete-product","arguments":{"productId":"p1"}},"id":7}'
 ```
 
-3. Проверить, что именно ответил API на то же действие:
+3. Убедиться, что запись действительно удалена на стороне API — запросить её напрямую:
 
 ```
-curl -i -X DELETE http://localhost:4001/products/p1
+curl -i http://localhost:4001/products/p1
 ```
+
+Ответ: `HTTP/1.1 404 Not Found`. Это подтверждает, что `DELETE`, отправленный MCP-сервером на шаге 2, был обработан API успешно: запись больше не существует.
+
+**Примечание о доказательстве кода 204.** Заглушка `stub-api.js` в текущей версии удаляет запись сразу при первом `DELETE`, поэтому повторный прямой запрос к той же записи закономерно вернёт 404, а не 204 — это не дефект, а следствие того, что ресурс уже удалён. Чтобы увидеть именно код ответа, который API отдал на запрос от MCP-сервера, в заглушку временно добавлено логирование:
+
+```js
+app.delete('/products/:id', (q, r) => {
+  const i = find(products, q.params.id)
+  if (i < 0) return notFound(r)
+  products.splice(i, 1)
+  console.log('DELETE /products/%s -> 204', q.params.id)
+  r.status(204).end()
+})
+```
+
+В логе заглушки в момент шага 2 видна строка `DELETE /products/p1 -> 204` — именно этот ответ API получил MCP-сервер и ошибочно интерпретировал как неудачу.
 
 ## Ожидаемый результат
 
