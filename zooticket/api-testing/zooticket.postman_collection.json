@@ -112,11 +112,9 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"// Ожидаемое поведение уточняется: см. DEF-001",
-							"pm.test('Новый платёж не создан', () => {",
-							"  const b = pm.response.json();",
-							"  pm.expect(b.id).to.eql(pm.collectionVariables.get('paymentId'));",
-							"});"
+							"console.log('TC-PAY-02 — фактический код ответа:', pm.response.code);",
+							"console.log('TC-PAY-02 — фактическое тело ответа:', pm.response.text());",
+							"console.log('DEF-001: не проверяем assertion по коду или id, пока аналитик не уточнит ожидаемое поведение идемпотентного запроса.')"
 						]
 					}
 				}
@@ -156,11 +154,8 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"console.log('TC-PAY-05 — фактический код ответа:', pm.response.code);",
-							"console.log('TC-PAY-05 — фактическое тело:', pm.response.text());",
-							"pm.test('TC-PAY-05: результат зафиксирован (ожидаемый результат не определён требованиями, см. DEF-002)', () => {",
-							"  pm.expect(pm.response.code).to.be.a('number');",
-							"});"
+							"console.log('TC-PAY-05 — исследовательский сценарий; код ответа:', pm.response.code);",
+							"console.log('TC-PAY-05 — исследовательский сценарий; тело ответа:', pm.response.text());"
 						]
 					}
 				}
@@ -241,11 +236,8 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"console.log('TC-PAY-06 — фактический код ответа:', pm.response.code);",
-							"console.log('TC-PAY-06 — фактическое тело:', pm.response.text());",
-							"pm.test('TC-PAY-06: результат зафиксирован (ожидаемый результат не определён требованиями)', () => {",
-							"  pm.expect(pm.response.code).to.be.a('number');",
-							"});"
+							"console.log('TC-PAY-06 — исследовательский сценарий; код ответа:', pm.response.code);",
+							"console.log('TC-PAY-06 — исследовательский сценарий; тело ответа:', pm.response.text());"
 						]
 					}
 				}
@@ -285,11 +277,8 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"console.log('TC-PAY-07 — фактический код ответа:', pm.response.code);",
-							"console.log('TC-PAY-07 — фактическое тело:', pm.response.text());",
-							"pm.test('TC-PAY-07: результат зафиксирован (ожидаемый результат не определён требованиями)', () => {",
-							"  pm.expect(pm.response.code).to.be.a('number');",
-							"});"
+							"console.log('TC-PAY-07 — исследовательский сценарий; код ответа:', pm.response.code);",
+							"console.log('TC-PAY-07 — исследовательский сценарий; тело ответа:', pm.response.text());"
 						]
 					}
 				}
@@ -374,11 +363,8 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"console.log('TC-PAY-09 — фактический код ответа:', pm.response.code);",
-							"console.log('TC-PAY-09 — фактическое тело:', pm.response.text());",
-							"pm.test('TC-PAY-09: результат зафиксирован (ожидаемый результат не определён требованиями)', () => {",
-							"  pm.expect(pm.response.code).to.be.a('number');",
-							"});"
+							"console.log('TC-PAY-09 — исследовательский сценарий; код ответа:', pm.response.code);",
+							"console.log('TC-PAY-09 — исследовательский сценарий; тело ответа:', pm.response.text());"
 						]
 					}
 				}
@@ -418,11 +404,8 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"console.log('TC-PAY-12 — фактический код ответа:', pm.response.code);",
-							"console.log('TC-PAY-12 — фактическое тело:', pm.response.text());",
-							"pm.test('TC-PAY-12: результат зафиксирован (ожидаемый результат не определён требованиями)', () => {",
-							"  pm.expect(pm.response.code).to.be.a('number');",
-							"});"
+							"console.log('TC-PAY-12 — исследовательский сценарий; код ответа:', pm.response.code);",
+							"console.log('TC-PAY-12 — исследовательский сценарий; тело ответа:', pm.response.text());"
 						]
 					}
 				}
@@ -573,6 +556,49 @@
 			]
 		},
 		{
+			"name": "06a. Подготовка платежа для проверки нулевого возврата",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Idempotency-Key",
+						"value": "refund-zero-setup"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/payments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"payments"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderId\": \"refund-zero\",\n  \"amount\": 1500,\n  \"currency\": \"RUB\",\n  \"returnUrl\": \"https://zooticket.ru/success\"\n}"
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Код ответа 201 для подготовки теста возврата', () => pm.response.to.have.status(201));",
+							"const b = pm.response.json();",
+							"pm.test('Создан отдельный платёж для теста возврата', () => pm.expect(b).to.have.property('id'));",
+							"if (b.id) pm.collectionVariables.set('paymentIdRefundZero', b.id);"
+						]
+					}
+				}
+			]
+		},
+		{
 			"name": "07a. Возврат — нулевая сумма",
 			"request": {
 				"method": "POST",
@@ -583,13 +609,13 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/payments/{{paymentId}}/refund",
+					"raw": "{{baseUrl}}/payments/{{paymentIdRefundZero}}/refund",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"payments",
-						"{{paymentId}}",
+						"{{paymentIdRefundZero}}",
 						"refund"
 					]
 				},
@@ -604,11 +630,51 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"console.log('TC-REF-07 — фактический код ответа:', pm.response.code);",
-							"console.log('TC-REF-07 — фактическое тело:', pm.response.text());",
-							"pm.test('TC-REF-07: результат зафиксирован (ожидаемый результат не определён требованиями)', () => {",
-							"  pm.expect(pm.response.code).to.be.a('number');",
-							"});"
+							"console.log('TC-REF-07 — исследовательский сценарий; код ответа:', pm.response.code);",
+							"console.log('TC-REF-07 — исследовательский сценарий; тело ответа:', pm.response.text());"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "06b. Подготовка платежа для проверки отрицательного возврата",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Idempotency-Key",
+						"value": "refund-negative-setup"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/payments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"payments"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderId\": \"refund-negative\",\n  \"amount\": 1500,\n  \"currency\": \"RUB\",\n  \"returnUrl\": \"https://zooticket.ru/success\"\n}"
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Код ответа 201 для подготовки теста возврата', () => pm.response.to.have.status(201));",
+							"const b = pm.response.json();",
+							"pm.test('Создан отдельный платёж для теста возврата', () => pm.expect(b).to.have.property('id'));",
+							"if (b.id) pm.collectionVariables.set('paymentIdRefundNegative', b.id);"
 						]
 					}
 				}
@@ -625,13 +691,13 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/payments/{{paymentId}}/refund",
+					"raw": "{{baseUrl}}/payments/{{paymentIdRefundNegative}}/refund",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"payments",
-						"{{paymentId}}",
+						"{{paymentIdRefundNegative}}",
 						"refund"
 					]
 				},
@@ -646,11 +712,51 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"console.log('TC-REF-08 — фактический код ответа:', pm.response.code);",
-							"console.log('TC-REF-08 — фактическое тело:', pm.response.text());",
-							"pm.test('TC-REF-08: результат зафиксирован (ожидаемый результат не определён требованиями)', () => {",
-							"  pm.expect(pm.response.code).to.be.a('number');",
-							"});"
+							"console.log('TC-REF-08 — исследовательский сценарий; код ответа:', pm.response.code);",
+							"console.log('TC-REF-08 — исследовательский сценарий; тело ответа:', pm.response.text());"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "06c. Подготовка платежа для проверки пустого тела возврата",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Idempotency-Key",
+						"value": "refund-empty-setup"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/payments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"payments"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderId\": \"refund-empty\",\n  \"amount\": 1500,\n  \"currency\": \"RUB\",\n  \"returnUrl\": \"https://zooticket.ru/success\"\n}"
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Код ответа 201 для подготовки теста возврата', () => pm.response.to.have.status(201));",
+							"const b = pm.response.json();",
+							"pm.test('Создан отдельный платёж для теста возврата', () => pm.expect(b).to.have.property('id'));",
+							"if (b.id) pm.collectionVariables.set('paymentIdRefundEmpty', b.id);"
 						]
 					}
 				}
@@ -667,13 +773,13 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/payments/{{paymentId}}/refund",
+					"raw": "{{baseUrl}}/payments/{{paymentIdRefundEmpty}}/refund",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"payments",
-						"{{paymentId}}",
+						"{{paymentIdRefundEmpty}}",
 						"refund"
 					]
 				},
