@@ -1,0 +1,16 @@
+{
+  "name": "qa-portfolio-mcp-stub",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local REST API stub used by MCP QA portfolio artefacts",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "stub": "node stub-api.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
