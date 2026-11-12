@@ -21,7 +21,13 @@
 - [BUG-007](rusau-learn/BUG-007-audio-pitch-on-speedup.md) — при ускорении видео меняется тон звука, в вебе этого нет;
 - [BUG-008](rusau-learn/BUG-008-play-download-vpn.md) — пример бага, который нужно сначала изолировать от окружения.
 
-### 2. [Яндекс — с Алисой AI](yandex-alice-ai) — ручное тестирование по тестовому заданию
+### 2. [Яндекс ID](yandex-id-auth) — вход с мобильного браузера
+
+Ручное тестирование входа в аккаунт Яндекс ID с телефона: по номеру, по логину, по лицу или отпечатку. Samsung Galaxy S24 FE, Android 16, Chrome 155.
+
+**Итог:** 10 тест-кейсов со скриншотами, все Pass. Одна находка: поле номера пропускает лишние цифры сверх маски, а два варианта экрана входа реагируют на это по-разному ([BUG-001](yandex-id-auth/BUG-001-phone-mask-overflow.md)).
+
+### 3. [Яндекс — с Алисой AI](yandex-alice-ai) — ручное тестирование по тестовому заданию
 
 Голосовые сценарии мобильного приложения: время, погода, музыка, картинки, монетка, навык «Угадай песню». Samsung Galaxy S24 FE, Android 16, версия приложения 26.87.
 
@@ -29,7 +35,7 @@
 
 Артефакты: [отчёт](yandex-alice-ai/test-report.md), [результаты тест-кейсов](yandex-alice-ai/test-cases-results.csv), [реестр наблюдений](yandex-alice-ai/bug-registry.csv).
 
-### 3. [ZooTicket](zooticket) — тест-дизайн по спецификации API
+### 4. [ZooTicket](zooticket) — тест-дизайн по спецификации API
 
 Система онлайн-продажи билетов в зоопарк, учебный проект курса «Системный аналитик» (Aston). Работающего стенда нет, поэтому это проектирование тестов по спецификации OpenAPI 3.0, а не прогон.
 
@@ -46,7 +52,7 @@
 | Что | Где |
 |---|---|
 | Баг-репорты со скриншотами и видео | [rusau-learn](rusau-learn) |
-| Тест-кейсы | [zooticket/test-cases](zooticket/test-cases), [результаты по Алисе](yandex-alice-ai/test-cases-results.csv) |
+| Тест-кейсы | [yandex-id-auth](yandex-id-auth/test-cases.md), [zooticket/test-cases](zooticket/test-cases), [результаты по Алисе](yandex-alice-ai/test-cases-results.csv) |
 | Отчёт о тестировании | [yandex-alice-ai/test-report.md](yandex-alice-ai/test-report.md) |
 | Дефекты требований | [zooticket/defect-reports](zooticket/defect-reports) |
 | Чек-листы | [zooticket/checklists](zooticket/checklists), [templates](templates) |
